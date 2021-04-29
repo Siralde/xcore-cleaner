@@ -1,0 +1,22 @@
+{
+  "name": "read",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bitcore-ecies": "JAlbertoGonzalez/bitcore-ecies",
+    "bitcore-message": "JAlbertoGonzalez/bitcore-message",
+    "kfs": "internxt/kfs",
+    "leveldown": "^6.0.0",
+    "levelup": "^5.0.0",
+    "moment": "^2.29.1",
+    "rc": "^1.2.8",
+    "secp256k1": "^4.0.0"
+  }
+}
