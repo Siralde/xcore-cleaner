@@ -130,11 +130,6 @@ function updatePercentUsed() {
   });
 }
 
-function cleanStorage() {
-  // config.storageManager.prototype.clean(() => console.log('!Cleaned'));
-  console.log('654654756375637563756375637254677889346723467ghdfaskjghadfsgkjhhaorue', config.storageManager._initShardReaper());
-}
-
 function updateNtpDelta() {
   storj.utils.getNtpTimeDelta(function(err, delta) {
     if (err) {
@@ -159,14 +154,10 @@ function updateNtpDelta() {
 updatePercentUsed();
 setInterval(updatePercentUsed, 10 * 60 * 1000); // Update space every 10 mins
 
-cleanStorage();
-
 if (processIsManaged) {
   updateNtpDelta();
   setInterval(updateNtpDelta, 10 * 60 * 1000); // Update ntp delta every 10 mins
 
   sendFarmerState();
   setInterval(sendFarmerState, 10 * 1000); // Update state every 10 secs
-
-  cleanStorage();
 }
