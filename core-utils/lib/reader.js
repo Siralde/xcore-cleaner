@@ -27,16 +27,17 @@ function readAllTokens(callback) {
         })
 }
 
-function readAllContracts(callback) {
+function readAllContracts(arr, callback) {
     let contador = 0;
     contracts.createReadStream()
         .on('data', function (data) {
             contador++;
-            const key = data.key.toString();
+            const key = data.key.toString(); //Key File for read all shards
             const value = JSON.parse(data.value.toString())
             const innerKey = Object.keys(value.contracts)[0]
             const contract = value.contracts[innerKey]
-            return console.log(contract);
+            arr.push(key);
+            return;
             const store_begin = new Date(contract.store_begin)
             const store_end = new Date(contract.store_end)
             const diff = moment(store_end).diff(moment(store_begin), 'days')
@@ -68,18 +69,25 @@ function readAllShards(callback) {
     });
 }
 
-readAllShards((err, shard) => {
+// readAllShards((err, shard) => {
     
-    if(err) 
-    {
-        console.log(err);
-    }
-    else
-    {
-        console.log(shard)
-    }
-})
+//     if(err) 
+//     {
+//         console.log(err);
+//     }
+//     else
+//     {
+//         console.log(shard);
+//     }
+// })
 
+function getShardDataHash()
+{
+    let arr = [];
+    readAllContracts(arr , (err, total) => console.log('TOTAL', total));
+    console.log('Arr', arr);
+}
 
+getShardDataHash()
 
 module.exports = { readAllContracts, readAllShards, readAllTokens }
