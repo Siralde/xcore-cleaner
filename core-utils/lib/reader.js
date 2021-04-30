@@ -27,31 +27,29 @@ function readAllTokens(callback) {
         })
 }
 
-function readAllContracts(arr, callback) {
-    let contador = 0;
+async function readAllContracts(callback) {
+    let arr = [];
     contracts.createReadStream()
-        .on('data', function (data) {
-            contador++;
+        .on('data', function (data) {;
             const key = data.key.toString(); //Key File for read all shards
             const value = JSON.parse(data.value.toString())
             const innerKey = Object.keys(value.contracts)[0]
-            const contract = value.contracts[innerKey]
+            const contract = value.contracts[innerKey];
             arr.push(key);
-            return;
             const store_begin = new Date(contract.store_begin)
             const store_end = new Date(contract.store_end)
             const diff = moment(store_end).diff(moment(store_begin), 'days')
             const diffNow = moment(store_end).diff(moment(new Date()), 'days')
-            console.log('Contract duration', diff)
-            console.log('Contract duration left', diffNow)
+            // console.log('Contract duration', diff)
+            // console.log('Contract duration left', diffNow)
         }).on('error', function (err) {
             console.log('Oh my!', err)
+            callback(err)
         }).on('close', function () {
             console.log('Stream closed')
         }).on('end', function () {
-            callback(null, contador)
+            callback(null, arr)
         })
-    return contracts
 }
 
 function readAllShards(callback) {
@@ -81,13 +79,6 @@ function readAllShards(callback) {
 //     }
 // })
 
-function getShardDataHash()
-{
-    let arr = [];
-    readAllContracts(arr , (err, total) => console.log('TOTAL', total));
-    console.log('Arr', arr);
-}
 
-getShardDataHash()
 
 module.exports = { readAllContracts, readAllShards, readAllTokens }

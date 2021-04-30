@@ -8,7 +8,7 @@ const http = require('http');
 const crypto = require('crypto');
 const url = require('url');
 const KeyPair = require('../crypto-tools/keypair');
-const { readAllContracts, readAllShards, readAllTokens } = require('../lib/reader');
+const { getShardDataHash, readAllContracts, readAllShards, readAllTokens } = require('../lib/reader');
 
 
 class FarmerInterface {
@@ -173,9 +173,8 @@ class FarmerInterface {
       req.end();
   }
 
-  getShards() {
-    const key = readAllContracts((err, total) => console.log('TOTAL', total));
-    console.log('Key', key);
+  getShards(callback) {
+    readAllContracts(callback)
   }
 
 }

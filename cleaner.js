@@ -6,4 +6,11 @@ const farmer = new cleaner.Farmer(config);
 
 farmer.connectBridge();
 
-farmer.getShards();
+farmer.getShards((err, arr) => {
+    
+    if(err)
+    {
+        return console.log(err);
+    }
+    
+});
