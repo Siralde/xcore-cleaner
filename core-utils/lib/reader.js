@@ -67,17 +67,6 @@ function readAllShards(callback) {
     });
 }
 
-// readAllShards((err, shard) => {
-    
-//     if(err) 
-//     {
-//         console.log(err);
-//     }
-//     else
-//     {
-//         console.log(shard);
-//     }
-// })
 
 
 

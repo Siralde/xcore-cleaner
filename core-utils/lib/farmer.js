@@ -10,7 +10,6 @@ const url = require('url');
 const KeyPair = require('../crypto-tools/keypair');
 const { getShardDataHash, readAllContracts, readAllShards, readAllTokens } = require('../lib/reader');
 
-
 class FarmerInterface {
   
   constructor(options) {
@@ -44,9 +43,9 @@ class FarmerInterface {
     }
   };
 
-  connectBridge() {
+  connectBridge(shards) {
     async.eachSeries(this.bridges.values(), (bridge, next) => {
-      this._connectBridge(bridge, (err) => {
+      this._connectBridge(bridge, shards, (err) => {
         console.log(err);
       })
       next();
@@ -58,30 +57,26 @@ class FarmerInterface {
     });
   }
   
-  _connectBridge(bridge, callback) {
+  _connectBridge(bridge, shards, callback) {
     let headers = {};
-    let body = {};
-    let path = '/contacts/' + this.keyPair.getNodeID();
+    let body = {shards};
+    let path = '/contacts/shards';
     
-    this.bridgeRequest(bridge.url, 'GET', path, headers, body, (err, contact) => {
+    this.bridgeRequest(bridge.url, 'POST', path, headers, body, (err, contact) => {
       
-      if (err && err.statusCode !== 404) 
+      if (err && err.statusCode >= 400) 
       {
         return callback(err);
       } 
-      else if (err && err.statusCode === 404) 
-      {
-        return this._addBridgeContact(bridge, callback);
-      }
   
-      if (contact.address) 
-      {
-        console.log('Contact', contact);
-      } 
-      else 
-      {
-        callback();
-      }
+      // if (contact.address) 
+      // {
+      //   console.log('Contact', contact);
+      // } 
+      // else 
+      // {
+      //   callback();
+      // }
 
     });
     
