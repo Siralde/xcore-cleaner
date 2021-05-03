@@ -27,7 +27,7 @@ function readAllTokens(callback) {
         })
 }
 
-async function readAllContracts(callback) {
+function readAllContracts(callback) {
     let arr = [];
     contracts.createReadStream()
         .on('data', function (data) {;
@@ -54,10 +54,6 @@ async function readAllContracts(callback) {
 
 function readAllShards(callback) {
 
-    let contador = 0;
-
-    let arr = [];
-
     shards.createReadStream('ed8b231c45d050cdbc3d1c2c87e35bed1023227f', function(err, shard) {
         if (err) {
           return callback(err);
@@ -68,6 +64,6 @@ function readAllShards(callback) {
 }
 
 
-
+readAllTokens(()=>console.log('alde'))
 
 module.exports = { readAllContracts, readAllShards, readAllTokens }

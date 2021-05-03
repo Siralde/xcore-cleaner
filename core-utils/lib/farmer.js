@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const url = require('url');
 const KeyPair = require('../crypto-tools/keypair');
 const { getShardDataHash, readAllContracts, readAllShards, readAllTokens } = require('../lib/reader');
+const Deleter = require('./deleter');
 
 class FarmerInterface {
   
@@ -21,11 +22,16 @@ class FarmerInterface {
 
     this._mapBridges(options.bridges);
     this._initKeyPair(options.networkPrivateKey);
+    this._initDeleter(options.storagePath);
   }
 
   _initKeyPair(networkPrivateKey) {
     // assert(networkPrivateKey, '"Network Private Key" is expected');
     this.keyPair = new KeyPair(networkPrivateKey);
+  }
+
+  _initDeleter(storagePath) {
+    this.deleter = new Deleter(storagePath);
   }
 
   getInstance() {
@@ -45,8 +51,15 @@ class FarmerInterface {
 
   connectBridge(shards) {
     async.eachSeries(this.bridges.values(), (bridge, next) => {
-      this._connectBridge(bridge, shards, (err) => {
-        console.log(err);
+      this._connectBridge(bridge, shards, (err, shardsRetrieved) => {
+        if(err)
+        {
+          console.log(err);
+        }
+        else
+        {
+          
+        }
       })
       next();
     }, (err) => {
@@ -62,21 +75,21 @@ class FarmerInterface {
     let body = {shards};
     let path = '/contacts/shards';
     
-    this.bridgeRequest(bridge.url, 'POST', path, headers, body, (err, contact) => {
+    this.bridgeRequest(bridge.url, 'POST', path, headers, body, (err, shardsRetrieved) => {
       
       if (err && err.statusCode >= 400) 
       {
         return callback(err);
       } 
   
-      // if (contact.address) 
-      // {
-      //   console.log('Contact', contact);
-      // } 
-      // else 
-      // {
-      //   callback();
-      // }
+      if (shardsRetrieved) 
+      {
+        console.log('Shards Retrieved', shardsRetrieved);
+      } 
+      else 
+      {
+        callback();
+      }
 
     });
     
