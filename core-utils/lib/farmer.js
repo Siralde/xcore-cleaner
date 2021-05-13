@@ -8,8 +8,14 @@ const http = require('http');
 const crypto = require('crypto');
 const url = require('url');
 const KeyPair = require('../crypto-tools/keypair');
-const { getShardDataHash, readAllContracts, readAllShards, readAllTokens } = require('../lib/reader');
+const Reader = require('../lib/reader');
 const Deleter = require('./deleter');
+const utils = require('../utils');
+const path = require('path');
+const levelup = require('levelup')
+const leveldown = require('leveldown')
+const kfs = require('kfs');
+
 
 class FarmerInterface {
   
@@ -22,20 +28,15 @@ class FarmerInterface {
 
     this._mapBridges(options.bridges);
     this._initKeyPair(options.networkPrivateKey);
-    this._initDeleter(options.storagePath);
-  }
+    
+    this._validatePath(options.storagePath);
+    
+    this._path = options.storagePath;
+    this._db = levelup(leveldown(path.join(this._path, 'contracts.db')));
+    this._fs = kfs(path.join(this._path, 'sharddata.kfs'));
 
-  _initKeyPair(networkPrivateKey) {
-    // assert(networkPrivateKey, '"Network Private Key" is expected');
-    this.keyPair = new KeyPair(networkPrivateKey);
-  }
-
-  _initDeleter(storagePath) {
-    this.deleter = new Deleter(storagePath);
-  }
-
-  getInstance() {
-    return FarmerInterface.instance;
+    this._initDeleter(options.storagePath, this._db, this._fs);
+    this._initReader(options.storagePath, this._db, this._fs);
   }
 
   _mapBridges(bridges) {
@@ -47,7 +48,37 @@ class FarmerInterface {
         connected: false
       });
     }
+  }
+
+  _initKeyPair(networkPrivateKey) {
+    // assert(networkPrivateKey, '"Network Private Key" is expected');
+    this.keyPair = new KeyPair(networkPrivateKey);
+  }
+
+  _initDeleter(storagePath, contractDB, shardDB) {
+    this.deleter = new Deleter(storagePath, contractDB, shardDB);
+  }
+
+  _initReader(storagePath, contractDB, shardDB) {
+    this.reader = new Reader(storagePath, contractDB, shardDB);
+  }
+
+  /**
+   * Validates the storage path supplied
+   * @private
+   */
+   _validatePath(storageDirPath) {
+    if (!utils.existsSync(storageDirPath)) {
+      mkdirp.sync(storageDirPath);
+    }
+  
+    assert(utils.isDirectory(storageDirPath), 'Invalid directory path supplied');
   };
+  
+
+  getInstance() {
+    return FarmerInterface.instance;
+  }
 
   connectBridge(shards) {
     async.eachSeries(this.bridges.values(), (bridge, next) => {
@@ -182,7 +213,7 @@ class FarmerInterface {
   }
 
   getShards(callback) {
-    readAllContracts(callback)
+    this.reader.readAllContracts(callback)
   }
 
 }

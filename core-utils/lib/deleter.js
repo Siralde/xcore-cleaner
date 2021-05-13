@@ -3,10 +3,7 @@
 const levelup = require('levelup');
 const leveldown = require('leveldown');
 const kfs = require('kfs');
-const path = require('path');
 const assert = require('assert');
-const utils = require('../utils');
-const mkdirp = require('mkdirp');
 
 /**
  * Implements an LevelDB/KFS storage adapter interface
@@ -18,16 +15,14 @@ const mkdirp = require('mkdirp');
 
 class Deleter {
 
-  constructor(storageDirPath) {
+  constructor(storageDirPath, contractDB, shardDB) {
     if (!(this instanceof Deleter)) {
       return new Deleter(storageDirPath);
     }
   
-    this._validatePath(storageDirPath);
-  
     this._path = storageDirPath;
-    this._db = levelup(leveldown(path.join(this._path, 'contracts.db')));
-    this._fs = kfs(path.join(this._path, 'sharddata.kfs'));
+    this._db = contractDB;
+    this._fs = shardDB;
     this._isOpen = true;
   }
   
@@ -52,18 +47,6 @@ class Deleter {
       console.log('delete item', item)
       callback(null);
     });
-  };
-  
-  /**
-   * Validates the storage path supplied
-   * @private
-   */
-  _validatePath(storageDirPath) {
-    if (!utils.existsSync(storageDirPath)) {
-      mkdirp.sync(storageDirPath);
-    }
-  
-    assert(utils.isDirectory(storageDirPath), 'Invalid directory path supplied');
   };
   
   
