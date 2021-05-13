@@ -16,7 +16,6 @@ const levelup = require('levelup')
 const leveldown = require('leveldown')
 const kfs = require('kfs');
 
-
 class FarmerInterface {
   
   constructor(options) {
@@ -89,7 +88,7 @@ class FarmerInterface {
         }
         else
         {
-          
+          console.log('Shards Retrieved', shardsRetrieved);
         }
       })
       next();
@@ -115,11 +114,7 @@ class FarmerInterface {
   
       if (shardsRetrieved) 
       {
-        console.log('Shards Retrieved', shardsRetrieved);
-      } 
-      else 
-      {
-        callback();
+        callback(null, shardsRetrieved);
       }
 
     });
@@ -214,6 +209,10 @@ class FarmerInterface {
 
   getShards(callback) {
     this.reader.readAllContracts(callback)
+  }
+
+  deleteUnusedData() {
+
   }
 
 }

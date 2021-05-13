@@ -1,8 +1,5 @@
 'use strict';
 
-const levelup = require('levelup');
-const leveldown = require('leveldown');
-const kfs = require('kfs');
 const assert = require('assert');
 
 /**
@@ -23,7 +20,6 @@ class Deleter {
     this._path = storageDirPath;
     this._db = contractDB;
     this._fs = shardDB;
-    this._isOpen = true;
   }
   
   /**
