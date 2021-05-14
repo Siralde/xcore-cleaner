@@ -66,41 +66,32 @@ class FarmerInterface {
    * Validates the storage path supplied
    * @private
    */
-   _validatePath(storageDirPath) {
+  _validatePath(storageDirPath) {
     if (!utils.existsSync(storageDirPath)) {
       mkdirp.sync(storageDirPath);
     }
   
     assert(utils.isDirectory(storageDirPath), 'Invalid directory path supplied');
   };
-  
 
   getInstance() {
     return FarmerInterface.instance;
   }
 
-  connectBridge(shards) {
-    async.eachSeries(this.bridges.values(), (bridge, next) => {
-      this._connectBridge(bridge, shards, (err, shardsRetrieved) => {
-        if(err)
-        {
-          console.log(err);
-        }
-        else
-        {
-          console.log('Shards Retrieved', shardsRetrieved);
-        }
-      })
-      next();
-    }, (err) => {
-      if (err) 
-      {
-        console.log(err)
+  getShardsFromBridge(shards, callback) {
+
+    const bridgeIter = this.bridges.values()
+    this._getShardsFromBridge(bridgeIter.next().value, shards, (err, shardsRetrieved) => {
+      if(err) {
+        callback(err);
       }
-    });
+      else {
+        callback(null, shardsRetrieved);
+      }
+    })
   }
   
-  _connectBridge(bridge, shards, callback) {
+  _getShardsFromBridge(bridge, shards, callback) {
     let headers = {};
     let body = {shards};
     let path = '/contacts/shards';
@@ -211,8 +202,8 @@ class FarmerInterface {
     this.reader.readAllContracts(callback)
   }
 
-  deleteUnusedData() {
-
+  deleteUnusedData(shardToDelete, callback) {
+    shardToDelete.map( (shard) => this.deleter.del(shard, callback));
   }
 
 }

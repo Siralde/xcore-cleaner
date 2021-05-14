@@ -1,7 +1,7 @@
-const levelup = require('levelup')
-const leveldown = require('leveldown')
+// const levelup = require('levelup')
+// const leveldown = require('leveldown')
 const moment = require('moment')
-const tokens = levelup(leveldown('/xcore-storage/tokens.db'))
+// const tokens = levelup(leveldown('/xcore-storage/tokens.db'))
 
 class Reader {
 
@@ -16,26 +16,26 @@ class Reader {
         this._isOpen = true;
     }
 
-    readAllTokens(callback) {
-        tokens.createReadStream()
-            .on('data', function (data) {
-                const key = data.key.toString()
-                const value = data.value.toString()
-                if (key.startsWith('EX')) {
-                    console.log(key, value)
-                } else {
-                    const token = JSON.parse(value)
-                    console.log(key)
-                    console.log(token)
-                }
-            }).on('error', function (err) {
-                console.log('Oh my!', err)
-            }).on('close', function () {
-                console.log('Stream closed')
-            }).on('end', function () {
-                callback()
-            })
-    }
+    // readAllTokens(callback) {
+    //     tokens.createReadStream()
+    //         .on('data', function (data) {
+    //             const key = data.key.toString()
+    //             const value = data.value.toString()
+    //             if (key.startsWith('EX')) {
+    //                 console.log(key, value)
+    //             } else {
+    //                 const token = JSON.parse(value)
+    //                 console.log(key)
+    //                 console.log(token)
+    //             }
+    //         }).on('error', function (err) {
+    //             console.log('Oh my!', err)
+    //         }).on('close', function () {
+                
+    //         }).on('end', function () {
+    //             callback()
+    //         })
+    // }
     
     readAllContracts(callback) {
         let arr = [];

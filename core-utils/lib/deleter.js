@@ -34,15 +34,7 @@ class Deleter {
     assert(key.length === 40, 'Key must be 160 bit hex string');
     assert(typeof callback === 'function', 'Callback function must be supplied');
   
-  
-    return self._del(key, function(err) {
-      if (err) {
-        return callback(err);
-      }
-
-      console.log('delete item', item)
-      callback(null);
-    });
+    return self._del(key, callback);
   };
   
   
@@ -71,7 +63,7 @@ class Deleter {
    */
   _del(key, callback) {
     const self = this;
-    const fskey = key;
+    let fskey = key;
   
     self._peek(key, function(err, item) {
       if (!err && item.fskey) {
