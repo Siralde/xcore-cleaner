@@ -37,6 +37,20 @@ class Deleter {
     return self._del(key, callback);
   };
   
+  /**
+   * Calls the implemented {@link StorageAdapter#_del}
+   * @param {String} key - Shard hash to delete the data for
+   * @param {Function} callback - Called with error or {@link StorageItem}
+   */
+  flush(key, callback) {
+    const self = this;
+  
+    assert(typeof key === 'string', 'Invalid key supplied');
+    assert(key.length === 40, 'Key must be 160 bit hex string');
+    assert(typeof callback === 'function', 'Callback function must be supplied');
+  
+    return self._del(key, callback);
+  };
   
   /**
    * Implements the abstract {@link StorageAdapter#_peek}
@@ -87,6 +101,5 @@ class Deleter {
   };
   
 }
-
 
 module.exports = Deleter;

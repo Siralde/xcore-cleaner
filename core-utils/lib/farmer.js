@@ -199,11 +199,15 @@ class FarmerInterface {
   }
 
   getShards(callback) {
-    this.reader.readAllContracts(callback)
+    this.reader.readAllContracts(callback);
   }
 
   deleteUnusedData(shardToDelete, callback) {
     shardToDelete.map( (shard) => this.deleter.del(shard, callback));
+  }
+
+  flushData() {
+    this.deleter.flush();
   }
 
 }
