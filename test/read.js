@@ -54,7 +54,7 @@ function readAllContracts(callback) {
 
 function readAllShards(callback) {
 
-    shards.createReadStream('ed8b231c45d050cdbc3d1c2c87e35bed1023227f', function(err, shard) {
+    shards.createReadStream('2923bc710fbec2973894fd0879cca366abe729b1', function(err, shard) {
         if (err) {
           return callback(err);
         }
@@ -64,6 +64,8 @@ function readAllShards(callback) {
 }
 
 
-readAllContracts((error, arr) => error ? console.log(error) : console.log('Data: ', arr))
+// readAllContracts((error, arr) => error ? console.log(error) : console.log('Data: ', arr))
+readAllShards((error, arr) => error ? console.log(error) : console.log('Data: ', arr))
+
 
 module.exports = { readAllContracts, readAllShards, readAllTokens }
