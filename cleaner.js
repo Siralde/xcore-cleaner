@@ -17,7 +17,13 @@ farmer.getShards((err, arr) => {
             return !bridgeShards.includes(shard);
         })
         console.log('Filtered Shards', filteredShardArray);
-        farmer.deleteUnusedData(filteredShardArray, (err) => {
+        // farmer.deleteUnusedData(filteredShardArray, (err) => {
+        //     if(err) {
+        //         console.error( 'Error Deleting Unused Data', err)
+        //     }
+        //     console.log('Finished');
+        // })
+        farmer.flushData((err) => {
             if(err) {
                 console.error( 'Error Deleting Unused Data', err)
             }

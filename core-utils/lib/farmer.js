@@ -206,8 +206,8 @@ class FarmerInterface {
     shardToDelete.map( (shard) => this.deleter.del(shard, callback));
   }
 
-  flushData() {
-    this.deleter.flush();
+  flushData(callback) {
+    this.deleter.flush(callback);
   }
 
 }

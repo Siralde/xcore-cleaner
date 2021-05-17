@@ -42,15 +42,23 @@ class Deleter {
    * @param {String} key - Shard hash to delete the data for
    * @param {Function} callback - Called with error or {@link StorageItem}
    */
-  flush(key, callback) {
+  flush(callback) {
     const self = this;
   
-    assert(typeof key === 'string', 'Invalid key supplied');
-    assert(key.length === 40, 'Key must be 160 bit hex string');
     assert(typeof callback === 'function', 'Callback function must be supplied');
   
-    return self._del(key, callback);
+    return self._flush(callback);
   };
+
+  /**
+   * Implements the abstract {@link StorageAdapter#_flush}
+   * @private
+   * @param {Function} callback
+   */
+  _flush(callback) {
+    this._fs.flush(callback);
+  };
+
   
   /**
    * Implements the abstract {@link StorageAdapter#_peek}
